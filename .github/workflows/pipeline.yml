@@ -42,3 +42,48 @@ jobs:
           severity: CRITICAL
           exit-code: "1"
           ignore-unfixed: true
+
+  deploy:
+    needs: checks
+    if: github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      id-token: write
+    env:
+      PROJECT_ID: ${{ vars.GCP_PROJECT_ID }}
+      REGION: ${{ vars.GCP_REGION }}
+      WORKLOAD_IDENTITY_PROVIDER: ${{ vars.WORKLOAD_IDENTITY_PROVIDER }}
+      DEPLOYER_SERVICE_ACCOUNT: ${{ vars.DEPLOYER_SERVICE_ACCOUNT }}
+      RUNTIME_SERVICE_ACCOUNT: ${{ vars.RUNTIME_SERVICE_ACCOUNT }}
+      IMAGE: ${{ vars.GCP_REGION }}-docker.pkg.dev/${{ vars.GCP_PROJECT_ID }}/consulta-tramites/api:${{ github.sha }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Verificar configuracion
+        run: |
+          test -n "$PROJECT_ID"
+          test -n "$REGION"
+          test -n "$WORKLOAD_IDENTITY_PROVIDER"
+          test -n "$DEPLOYER_SERVICE_ACCOUNT"
+          test -n "$RUNTIME_SERVICE_ACCOUNT"
+
+      - uses: google-github-actions/auth@v2
+        with:
+          workload_identity_provider: ${{ vars.WORKLOAD_IDENTITY_PROVIDER }}
+          service_account: ${{ vars.DEPLOYER_SERVICE_ACCOUNT }}
+
+      - uses: google-github-actions/setup-gcloud@v2
+
+      - name: Publicar imagen
+        run: |
+          gcloud auth configure-docker "$REGION-docker.pkg.dev" --quiet
+          docker build -t "$IMAGE" .
+          docker push "$IMAGE"
+
+      - name: Desplegar en Cloud Run
+        run: |
+          gcloud run deploy consulta-tramites \
+            --image "$IMAGE" \
+            --region "$REGION" \
+            --service-account "$RUNTIME_SERVICE_ACCOUNT"
