@@ -14,7 +14,11 @@ ENV PYTHONDONTWRITEBYTECODE=1 \
 COPY --from=builder /install /install
 COPY app /app/app
 
-RUN useradd --create-home --uid 10001 appuser
+RUN apt-get update \
+    && apt-get upgrade -y --no-install-recommends \
+    && apt-get clean \
+    && rm -rf /var/lib/apt/lists/* \
+    && useradd --create-home --uid 10001 appuser
 USER appuser
 WORKDIR /app
 
