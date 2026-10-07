@@ -1,10 +1,10 @@
-FROM python:3.12.11-slim AS builder
+FROM python:3.12.11-slim-bookworm AS builder
 
 WORKDIR /build
 COPY requirements.txt .
 RUN pip install --no-cache-dir --prefix=/install -r requirements.txt
 
-FROM python:3.12.11-slim
+FROM python:3.12.11-slim-bookworm
 
 ENV PYTHONDONTWRITEBYTECODE=1 \
     PYTHONUNBUFFERED=1 \
@@ -14,7 +14,11 @@ ENV PYTHONDONTWRITEBYTECODE=1 \
 COPY --from=builder /install /install
 COPY app /app/app
 
-RUN useradd --create-home --uid 10001 appuser
+RUN apt-get update \
+    && apt-get upgrade -y --no-install-recommends \
+    && apt-get clean \
+    && rm -rf /var/lib/apt/lists/* \
+    && useradd --create-home --uid 10001 appuser
 USER appuser
 WORKDIR /app
 
