@@ -1,1 +1,2 @@
-aws_access_key_id = AKIAIOSFODNN7EXAMPLE
+# demostracion intencional para gitleaks
+api_key = "demo_8f3a9c2e7b6d4a1f0e9c8b7a6d5f4e3c2b1a0987"
