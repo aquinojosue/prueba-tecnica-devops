@@ -13,6 +13,11 @@ variable "github_repository" {
   default = "aquinojosue/prueba-tecnica-devops"
 }
 
+variable "billing_account_id" {
+  type    = string
+  default = "016D35-BF24CE-C7CE86"
+}
+
 variable "billing_alert_email" {
   type    = string
   default = "aquinojosue3@gmail.com"

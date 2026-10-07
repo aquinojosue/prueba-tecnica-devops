@@ -1,9 +1,5 @@
 data "google_project" "current" {}
 
-data "google_billing_account" "current" {
-  billing_account = data.google_project.current.billing_account
-}
-
 resource "google_monitoring_notification_channel" "billing_email" {
   display_name = "Alerta de presupuesto"
   type         = "email"
@@ -14,7 +10,7 @@ resource "google_monitoring_notification_channel" "billing_email" {
 }
 
 resource "google_billing_budget" "monthly_limit" {
-  billing_account = data.google_billing_account.current.id
+  billing_account = var.billing_account_id
   display_name    = "Limite mensual de la prueba"
 
   budget_filter {
