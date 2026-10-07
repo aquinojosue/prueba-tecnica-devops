@@ -1,4 +1,5 @@
 import os
+from typing import Optional
 
 from fastapi import FastAPI, Header, HTTPException
 
@@ -6,7 +7,7 @@ app = FastAPI(title="Consulta de trámites", version="0.1.0")
 
 
 @app.get("/health")
-def health() -> dict[str, str]:
+def health() -> dict:
     return {"status": "ok"}
 
 
@@ -19,8 +20,8 @@ TRAMITES = {
 @app.get("/tramites/{numero}")
 def consultar_tramite(
     numero: str,
-    x_api_key: str | None = Header(default=None),
-) -> dict[str, str]:
+    x_api_key: Optional[str] = Header(default=None),
+) -> dict:
     api_key = os.getenv("API_KEY")
     if not api_key or x_api_key != api_key:
         raise HTTPException(status_code=401, detail="no autorizado")
