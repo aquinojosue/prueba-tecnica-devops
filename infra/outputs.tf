@@ -13,3 +13,11 @@ output "artifact_registry_repository" {
 output "api_key_secret" {
   value = google_secret_manager_secret.api_key.secret_id
 }
+
+output "runtime_service_account" {
+  value = google_service_account.runtime.email
+}
+
+output "deployer_service_account" {
+  value = google_service_account.deployer.email
+}
