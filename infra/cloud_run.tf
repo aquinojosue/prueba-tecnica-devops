@@ -3,6 +3,10 @@ resource "google_cloud_run_v2_service" "api" {
   location = var.region
   ingress  = "INGRESS_TRAFFIC_ALL"
 
+  scaling {
+    min_instance_count = 0
+  }
+
   template {
     service_account = google_service_account.runtime.email
 
