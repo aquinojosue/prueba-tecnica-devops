@@ -46,9 +46,11 @@ Los cambios entran por pull request. El workflow verifica la aplicación, ejecut
 
 ## Decisiones
 
-- Elegí Cloud Run porque el servicio tiene tráfico variable y no necesita la operación de un clúster. Descarté GKE para esta prueba por su costo y administracion.
-- Elegí Workload Identity Federation para evitar llaves JSON. Descarté una credencial descargable por el riesgo de filtrarla.
-- Elegí una API pequeña en memoria porque la evaluación se centra en la plataforma. Descarté agregar una base de datos real en esta entrega.
+Usé Cloud Run porque la API no guarda estado y el tráfico puede variar durante el día. GKE me habría servido para una plataforma con varias cargas, pero aquí solo agregaba costo y operación.
+
+GitHub Actions se autentica con Workload Identity Federation. Preferí eso antes que crear una llave JSON, porque una llave se puede filtrar y después hay que rotarla.
+
+Los trámites están en memoria. Era suficiente para probar el despliegue, los secretos y el pipeline. Dejé Cloud SQL fuera de esta entrega porque la base no era necesaria para demostrar la plataforma.
 
 ## Pendiente
 
@@ -64,3 +66,7 @@ tofu destroy
 ```
 
 Después se eliminan manualmente el bucket de estado y el proyecto GCP.
+
+## Uso de IA
+
+Usé Cursor como apoyo para estructurar la solución y revisar algunos errores durante la implementación. Revisé los cambios y ejecuté las pruebas localmente.
