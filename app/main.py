@@ -14,6 +14,7 @@ def health() -> dict:
 TRAMITES = {
     "TRM-1001": {"estado": "en_revision", "paso": "validacion documental"},
     "TRM-1002": {"estado": "aprobado", "paso": "listo para retiro"},
+    "TRM-1003": {"estado": "cancelado", "paso": "cancelado"},
 }
 
 
